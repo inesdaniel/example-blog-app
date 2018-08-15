@@ -1,11 +1,93 @@
 /* global Vue, VueRouter, axios */
+var PostsEditPage = {
+  template: "#posts-edit-page",
+  data: function() {
+    return {
+      title: "",
+      body: "",
+      user_id: "",
+      errors: []
+    };
+  },
+  methods: {
+    submit: function() {
+      console.log("in the edit post submit function");
+      var params = {
+        title: this.title,
+        body: this.body,
+        user_id: this.user_id
+      };
+      axios
+        .post("/v1/posts", params)
+        .then(function(response) {
+          router.push("/");
+        })
+        .catch(
+          function(error) {
+            this.errors = error.response.data.errors;
+          }.bind(this)
+        );
+    }
+  }
+};
+
+var PostsShowPage = {
+  template: "#posts-show-page",
+  data: function() {
+    return {
+      message: "Posts!",
+      post: {title: "", body: "", user_id: ""}
+    };
+  },
+  created: function() {
+    axios.get('/v1/posts/' + this.$route.params.id).then(function(response) {
+      console.log(response);
+      this.post = response.data;
+    }.bind(this));
+  },
+  methods: {},
+  computed: {}
+};
+
+var PostsNewPage = {
+  template: "#posts-new-page",
+  data: function() {
+    return {
+      title: "",
+      body: "",
+      user_id: "",
+      errors: []
+    };
+  },
+  methods: {
+    submit: function() {
+      console.log("in the new post submit function");
+      var params = {
+        title: this.title,
+        body: this.body,
+        user_id: this.user_id
+      };
+      axios
+        .post("/v1/posts", params)
+        .then(function(response) {
+          router.push("/");
+        })
+        .catch(
+          function(error) {
+            this.errors = error.response.data.errors;
+          }.bind(this)
+        );
+    }
+  }
+};
 
 var HomePage = {
   template: "#home-page",
   data: function() {
     return {
-      message: "Welcome to Vue.js!",
-      posts: []
+      message: "Posts!",
+      posts: [],
+      selectedPost: {title: "", user_id: "", body: ""}
     };
   },
   created: function() {
@@ -14,7 +96,11 @@ var HomePage = {
       this.posts = response.data;
     }.bind(this));
   },
-  methods: {},
+  methods: {
+    viewThePost: function(inputPost) {
+      this.selectedPost = inputPost;
+    }
+  },
   computed: {}
 };
 
@@ -99,7 +185,10 @@ var router = new VueRouter({
     { path: "/", component: HomePage },
     { path: "/signup", component: SignupPage },
     { path: "/login", component: LoginPage },
-    { path: "/logout", component: LogoutPage }
+    { path: "/logout", component: LogoutPage },
+    { path: "/posts/new", component: PostsNewPage },
+    { path: "/posts/:id", component: PostsShowPage },
+    { path: "/posts/:id/edit", component: PostsEditPage }
   ],
   scrollBehavior: function(to, from, savedPosition) {
     return { x: 0, y: 0 };

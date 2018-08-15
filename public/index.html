@@ -11,9 +11,12 @@
 </head>
 <body>
   <div id="vue-app">
+    <a href="/#/">Home</a>
     <a href="/#/signup">Signup</a>
     <a href="/#/login">Login</a>
     <a href="/#/logout">Logout</a>
+    <a href="/#/posts/new">New Post</a>
+
 
     <router-view></router-view>
 
@@ -24,6 +27,45 @@
 </body>
 </html>
 
+<template id="posts-show-page">
+  <div class="vue-component">
+
+    <h1>{{ message }}</h1>
+
+      <p>Title: {{ post.title }}</p>
+      <p>User: {{ post.user_id }}</p>
+      <p>Post: {{ post.body }}</p>
+   
+
+  </div>
+</template>
+
+<template id="posts-new-page">
+  <div class="vue-component">
+
+    <div class="container">
+      <h1>Make a new post</h1>
+      <ul>
+        <li class="text-danger" v-for="error in errors">{{ error }}</li>
+      </ul>
+      <div class="form-group">
+        <label>Title:</label> 
+        <input type="text" class="form-control" v-model="title">
+      </div>
+      <div class="form-group">
+        <label>Post:</label>
+        <input type="text" class="form-control" v-model="body">
+      </div>
+      <div class="form-group">
+        <label>User Id:</label>
+        <input type="text" class="form-control" v-model="user_id">
+      </div>
+      <button class="btn btn-primary" v-on:click="submit()">Submit</button>
+    </div>
+
+  </div>
+</template>
+
 <template id="home-page">
   <div class="vue-component">
 
@@ -32,9 +74,31 @@
     <div v-for="post in posts">
       <p>Title: {{ post.title }}</p>
       <p>User: {{ post.user_id }}</p>
-      <p>Post: {{ post.body }}</p>
+      <!-- Button trigger modal -->
+      <button v-on:click="viewThePost(post)" type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+        View Post
+      </button>
     </div>
 
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">{{ selectedPost.title }}</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            User: {{ selectedPost.user_id }}
+            <p>Post: {{ selectedPost.body }}</p>
+          </div>
+          <div class="modal-footer">         
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
